@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		640D3638292561660059F366 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 640D3637292561660059F366 /* main.cpp */; };
+		640D3641292563170059F366 /* uop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 640D363F292563170059F366 /* uop.cpp */; };
+		640D3644292563370059F366 /* art.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 640D3642292563370059F366 /* art.cpp */; };
+		640D364A292569FC0059F366 /* hash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 640D36482925696D0059F366 /* hash.cpp */; };
+		64E005B12927C7FA00BEBA8F /* multi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 640D364B292664E50059F366 /* multi.cpp */; };
+		64E005B42927CA0E00BEBA8F /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 64E005B32927CA0800BEBA8F /* libz.tbd */; };
+		64E005B72927CA7D00BEBA8F /* argument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64E005B52927CA7D00BEBA8F /* argument.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +31,19 @@
 /* Begin PBXFileReference section */
 		640D3634292561660059F366 /* multi */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = multi; sourceTree = BUILT_PRODUCTS_DIR; };
 		640D3637292561660059F366 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		640D363E292561D90059F366 /* bitmap.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = bitmap.hpp; sourceTree = "<group>"; };
+		640D363F292563170059F366 /* uop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = uop.cpp; sourceTree = "<group>"; };
+		640D3640292563170059F366 /* uop.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = uop.hpp; sourceTree = "<group>"; };
+		640D3642292563370059F366 /* art.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = art.cpp; sourceTree = "<group>"; };
+		640D3643292563370059F366 /* art.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = art.hpp; sourceTree = "<group>"; };
+		640D3645292563550059F366 /* strutil.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = strutil.hpp; sourceTree = "<group>"; };
+		640D36482925696D0059F366 /* hash.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = hash.cpp; sourceTree = "<group>"; };
+		640D36492925696D0059F366 /* hash.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = hash.hpp; sourceTree = "<group>"; };
+		640D364B292664E50059F366 /* multi.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = multi.cpp; sourceTree = "<group>"; };
+		640D364C292664E50059F366 /* multi.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = multi.hpp; sourceTree = "<group>"; };
+		64E005B32927CA0800BEBA8F /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		64E005B52927CA7D00BEBA8F /* argument.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = argument.cpp; sourceTree = "<group>"; };
+		64E005B62927CA7D00BEBA8F /* argument.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = argument.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				64E005B42927CA0E00BEBA8F /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,8 +61,9 @@
 		640D362B292561660059F366 = {
 			isa = PBXGroup;
 			children = (
-				640D3636292561660059F366 /* multi */,
+				640D3636292561660059F366 /* source */,
 				640D3635292561660059F366 /* Products */,
+				64E005B22927CA0800BEBA8F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,12 +75,40 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		640D3636292561660059F366 /* multi */ = {
+		640D3636292561660059F366 /* source */ = {
 			isa = PBXGroup;
 			children = (
+				640D36462925643D0059F366 /* support */,
 				640D3637292561660059F366 /* main.cpp */,
+				64E005B52927CA7D00BEBA8F /* argument.cpp */,
+				64E005B62927CA7D00BEBA8F /* argument.hpp */,
 			);
-			path = multi;
+			path = source;
+			sourceTree = "<group>";
+		};
+		640D36462925643D0059F366 /* support */ = {
+			isa = PBXGroup;
+			children = (
+				640D36482925696D0059F366 /* hash.cpp */,
+				640D36492925696D0059F366 /* hash.hpp */,
+				640D3645292563550059F366 /* strutil.hpp */,
+				640D3642292563370059F366 /* art.cpp */,
+				640D3643292563370059F366 /* art.hpp */,
+				640D363F292563170059F366 /* uop.cpp */,
+				640D3640292563170059F366 /* uop.hpp */,
+				640D363E292561D90059F366 /* bitmap.hpp */,
+				640D364B292664E50059F366 /* multi.cpp */,
+				640D364C292664E50059F366 /* multi.hpp */,
+			);
+			path = support;
+			sourceTree = "<group>";
+		};
+		64E005B22927CA0800BEBA8F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				64E005B32927CA0800BEBA8F /* libz.tbd */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -90,6 +139,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastUpgradeCheck = 1410;
+				ORGANIZATIONNAME = "Charles Kerr";
 				TargetAttributes = {
 					640D3633292561660059F366 = {
 						CreatedOnToolsVersion = 14.1;
@@ -119,6 +169,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				64E005B72927CA7D00BEBA8F /* argument.cpp in Sources */,
+				64E005B12927C7FA00BEBA8F /* multi.cpp in Sources */,
+				640D364A292569FC0059F366 /* hash.cpp in Sources */,
+				640D3644292563370059F366 /* art.cpp in Sources */,
+				640D3641292563170059F366 /* uop.cpp in Sources */,
 				640D3638292561660059F366 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
