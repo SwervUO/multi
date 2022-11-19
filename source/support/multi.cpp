@@ -429,8 +429,8 @@ auto multistorage_t::saveHousing(const std::filesystem::path &filepath) const ->
         // uncompress the data!
         auto temp = std::vector<std::uint8_t>(housing_location.decompressed_length,0) ;
         
-        auto destsize = temp.size()  ;
-        auto srcsize = data.size() ;
+        auto destsize = static_cast<uLong>(temp.size())  ;
+        auto srcsize = static_cast<uLong>(data.size()) ;
         auto status = uncompress2(temp.data(), &destsize, data.data(), &srcsize);
         if (status != Z_OK){
             throw std::runtime_error("Decompression error");
@@ -457,8 +457,8 @@ auto multistorage_t::operator[](std::uint32_t index) const -> multi_t {
                 // uncompress the data!
                 auto temp = std::vector<std::uint8_t>(iter->second.decompressed_length,0) ;
                 
-                auto destsize = temp.size()  ;
-                auto srcsize = data.size() ;
+                auto destsize = static_cast<uLong>(temp.size())  ;
+                auto srcsize = static_cast<uLong>(data.size()) ;
                 auto status = uncompress2(temp.data(), &destsize, data.data(), &srcsize);
                 if (status != Z_OK){
                     throw std::runtime_error("Decompression error");
@@ -495,7 +495,7 @@ auto multistorage_t::saveUOP(const std::filesystem::path &csvdirectory ,const st
         auto table = table_entry() ;
         table.decompressed_length = static_cast<std::uint32_t>(data.size()) ;
         table.compression = 1 ;
-        auto destsize = uLongf(compressBound(data.size()));
+        auto destsize = static_cast<uLong>(compressBound(static_cast<uLong>(data.size())));
         auto dest = std::vector<std::uint8_t>(destsize,0) ;
         auto srcsize = uLongf(data.size());
         
@@ -524,7 +524,7 @@ auto multistorage_t::saveUOP(const std::filesystem::path &csvdirectory ,const st
     auto house = std::vector<std::uint8_t>(size,0) ;
     housing.read(reinterpret_cast<char*>(house.data()),house.size());
     auto table = table_entry() ;
-    auto destsize = uLongf(compressBound(house.size()));
+    auto destsize = static_cast<uLong>(compressBound(static_cast<uLong>(house.size())));
     auto dest = std::vector<std::uint8_t>(destsize,0) ;
     auto srcsize = uLongf(house.size());
     
