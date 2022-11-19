@@ -11,51 +11,49 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\adler32.c" />
-    <ClCompile Include="..\compress.c" />
-    <ClCompile Include="..\crc32.c" />
-    <ClCompile Include="..\deflate.c" />
-    <ClCompile Include="..\gzclose.c" />
-    <ClCompile Include="..\gzlib.c" />
-    <ClCompile Include="..\gzread.c" />
-    <ClCompile Include="..\gzwrite.c" />
-    <ClCompile Include="..\infback.c" />
-    <ClCompile Include="..\inffast.c" />
-    <ClCompile Include="..\inflate.c" />
-    <ClCompile Include="..\inftrees.c" />
-    <ClCompile Include="..\trees.c" />
-    <ClCompile Include="..\uncompr.c" />
-    <ClCompile Include="..\zutil.c" />
+    <ClCompile Include="source\argument.cpp" />
+    <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\support\art.cpp" />
+    <ClCompile Include="source\support\hash.cpp" />
+    <ClCompile Include="source\support\multi.cpp" />
+    <ClCompile Include="source\support\uop.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\crc32.h" />
-    <ClInclude Include="..\deflate.h" />
-    <ClInclude Include="..\gzguts.h" />
-    <ClInclude Include="..\inffast.h" />
-    <ClInclude Include="..\inffixed.h" />
-    <ClInclude Include="..\inflate.h" />
-    <ClInclude Include="..\inftrees.h" />
-    <ClInclude Include="..\trees.h" />
-    <ClInclude Include="..\zconf.h" />
-    <ClInclude Include="..\zlib.h" />
-    <ClInclude Include="..\zutil.h" />
+    <ClInclude Include="source\argument.hpp" />
+    <ClInclude Include="source\support\art.hpp" />
+    <ClInclude Include="source\support\bitmap.hpp" />
+    <ClInclude Include="source\support\hash.hpp" />
+    <ClInclude Include="source\support\multi.hpp" />
+    <ClInclude Include="source\support\strutil.hpp" />
+    <ClInclude Include="source\support\uop.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="asset\appicon.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="asset\uox3.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="compression\ide\compression.vcxproj">
+      <Project>{89dd830d-029b-4f44-a470-baa33ea525ac}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{89dd830d-029b-4f44-a470-baa33ea525ac}</ProjectGuid>
-    <RootNamespace>compression</RootNamespace>
+    <ProjectGuid>{5c323d2d-03da-4d6b-8d5d-dafa0f16e0d4}</ProjectGuid>
+    <RootNamespace>multi</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -77,17 +75,14 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;WIN32</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;WIN32</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
-      <DisableSpecificWarnings>4244;4267;4047;4146;4334;4311</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>.\compression;.\source;.\source\support</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>
-      </SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -97,17 +92,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;WIN32</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;WIN32</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
-      <DisableSpecificWarnings>4244;4267;4047;4146;4334;4311</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>.\compression;.\source;.\source\support</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>
-      </SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
