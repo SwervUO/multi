@@ -537,6 +537,7 @@ auto multistorage_t::saveUOP(const std::filesystem::path &csvdirectory ,const st
     table.decompressed_length = static_cast<std::uint32_t>(dest.size());
     table.compressed_length = static_cast<std::uint32_t>(house.size());
     table.identifier = housinghash ;
+    table.compression =1 ;
     table.data_block_hash = hashAdler32(house);
     table.offset = output.tellp() ;
    
