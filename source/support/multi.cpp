@@ -98,7 +98,7 @@ multi_component_t::multi_component_t(const std::string &entry) :multi_component_
 //      std::uint16_t flag      << different from mul
 //                              (value of 0, set bit 1 in old flag)
 //                              (value of 1, no bits set)
-//                              (value of 257, set flag = 0x800)
+//                              (value of 257, set flag = 0x0000000100000000)(alphablend)
 //      std::uint32_t num_cliloc
 //      std::uint32_t cliloc[num_cliloc]
 //
@@ -119,8 +119,11 @@ auto multi_component_t::loaduop(const std::uint8_t *data) ->int {
         case 0:
             flag =1 ;
             break;
+        case 256:
+            flag =0x0000000100000001;
+            break;
         case 257:
-            flag = 0x800;
+            flag = 0x0000000100000000;
             break;
         case 1:
             flag = 0 ;
@@ -180,7 +183,10 @@ auto multi_component_t::data(bool isuop ) const ->std::vector<std::uint8_t> {
             case 1:
                 uflag =0 ;
                 break;
-            case 0x800:
+            case 0x0000000100000001:
+                uflag = 256;
+                break;
+            case 0x0000000100000000:
                 uflag = 257;
                 break;
             default:
