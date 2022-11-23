@@ -17,7 +17,7 @@ argument_t::argument_t(int argc,const char * argv[]) {
             if (value.size()>2){
                 value = value.substr(2) ;
                 auto [key,keyvalue] = strutil::split(value,"=");
-                flags.push_back(std::make_pair(strutil::lower(key), value)) ;
+                flags.push_back(std::make_pair(strutil::lower(key), keyvalue)) ;
            }
         }
         else {
