@@ -429,7 +429,7 @@ auto multistorage_t::saveHousing(const std::filesystem::path &filepath) const ->
     }
     auto offset = housing_location.offset + housing_location.header_length ;
     auto data = std::vector<std::uint8_t>(housing_location.compressed_length,0) ;
-    datafile.seekg(offset);
+    datafile.seekg(offset,std::ios::beg);
     datafile.read(reinterpret_cast<char*>(data.data()),data.size()) ;
     if (housing_location.compression){
         // uncompress the data!
@@ -456,7 +456,7 @@ auto multistorage_t::operator[](std::uint32_t index) const -> multi_t {
         if (iter->second.decompressed_length >= componentmulsize) {
             auto offset = iter->second.offset + iter->second.header_length ;
             auto data = std::vector<std::uint8_t>(iter->second.compressed_length,0) ;
-            datafile.seekg(offset);
+            datafile.seekg(offset,std::ios::beg);
             
             datafile.read(reinterpret_cast<char*>(data.data()),data.size()) ;
             if (iter->second.compression){
@@ -515,12 +515,12 @@ auto multistorage_t::saveUOP(const std::filesystem::path &csvdirectory ,const st
         table.identifier = hashLittle2(strutil::format(hashformat,id));
         table.data_block_hash = hashAdler32(data);
         table.offset = output.tellp() ;
-        output.seekp(offset);
+        output.seekp(offset,std::ios::beg);
         output.write(reinterpret_cast<char*>(data.data()),data.size());
         offset = output.tellp();
-        output.seekp(offsets[count]);
+        output.seekp(offsets[count],std::ios::beg);
         table.save(output);
-        output.seekp(offset) ;
+        output.seekp(offset,std::ios::beg) ;
         count++ ;
     }
     // Now we need to housing.bin
@@ -547,12 +547,12 @@ auto multistorage_t::saveUOP(const std::filesystem::path &csvdirectory ,const st
     table.data_block_hash = hashAdler32(house);
     table.offset = output.tellp() ;
    
-    output.seekp(offset);
+    output.seekp(offset,std::ios::beg);
     output.write(reinterpret_cast<char*>(house.data()),house.size());
     offset = output.tellp();
-    output.seekp(offsets[count]);
+    output.seekp(offsets[count],std::ios::beg);
     table.save(output);
-    output.seekp(offset) ;
+    output.seekp(offset,std::ios::beg) ;
 
 }
 //====================================================================================
@@ -596,4 +596,134 @@ auto multistorage_t::saveMUL(const std::filesystem::path &csvdirectory, const st
             idx.write(reinterpret_cast<char*>(&extra),4);
         }
     }
+}
+//====================================================================================
+auto multistorage_t::housing() const ->std::vector<std::uint8_t> {
+    auto offset = housing_location.offset + housing_location.header_length ;
+    auto data = std::vector<std::uint8_t>(housing_location.compressed_length,0) ;
+    datafile.seekg(offset,std::ios::beg);
+    datafile.read(reinterpret_cast<char*>(data.data()),data.size()) ;
+    if (housing_location.compression){
+        // uncompress the data!
+        auto temp = std::vector<std::uint8_t>(housing_location.decompressed_length,0) ;
+        
+        auto destsize = static_cast<uLong>(temp.size())  ;
+        auto srcsize = static_cast<uLong>(data.size()) ;
+        auto status = uncompress2(temp.data(), &destsize, data.data(), &srcsize);
+        if (status != Z_OK){
+            throw std::runtime_error("Decompression error");
+        }
+        std::swap(data,temp) ;
+    }
+    return data ;
+}
+//====================================================================================
+auto multistorage_t::save(const std::filesystem::path &datapath,const std::filesystem::path &idxpath,const std::vector<std::uint8_t> &housingdata ) ->void {
+    if (!idxpath.empty()){
+        // We are saving to a mul/idx
+        auto idx = std::ofstream(idxpath.string(),std::ios::binary) ;
+        if (!idx.is_open()){
+            throw std::runtime_error(strutil::format("Unable to create: %s",idxpath.string().c_str()));
+        }
+        auto mul = std::ofstream(datapath.string(),std::ios::binary);
+        if (!mul.is_open()){
+            throw std::runtime_error(strutil::format("Unable to create: %s",datapath.string().c_str()));
+        }
+        if (entry_location.empty()){
+            throw std::runtime_error("There are no multi entries to save"s);
+        }
+        auto maxid = std::max(idxmax,static_cast<int>(entry_location.rbegin()->first)) ;
+        
+        auto length = std::uint32_t(0) ;
+        auto extra = std::uint32_t(0) ;
+        auto offset = std::uint32_t(0) ;
+        for (std::uint32_t id = 0 ; id < static_cast<std::uint32_t>(maxid);id++){
+            auto iter = entry_location.find(id) ;
+            if (iter != entry_location.end()){
+                auto multi = (*this)[id] ;
+                auto muldata = multi.record(false) ;
+                offset = static_cast<std::uint32_t>(mul.tellp()) ;
+                mul.write(reinterpret_cast<char*>(muldata.data()),muldata.size());
+                auto length = static_cast<std::uint32_t>(muldata.size());
+                idx.write(reinterpret_cast<char*>(&offset),4);
+                idx.write(reinterpret_cast<char*>(&length), 4);
+                idx.write(reinterpret_cast<char*>(&extra),4);
+            }
+            else {
+                length = 0 ;
+                offset = 0xFFFFFFFE;
+                idx.write(reinterpret_cast<char*>(&offset),4);
+                idx.write(reinterpret_cast<char*>(&length), 4);
+                idx.write(reinterpret_cast<char*>(&extra),4);
+            }
+        }
+     }
+    else {
+        // We are saving to a uop!
+        if (housingdata.empty()){
+            throw std::runtime_error(strutil::format("No housing.bin data provided, can not create: %s",datapath.string().c_str()));
+        }
+        auto uop = std::ofstream(datapath.string(),std::ios::binary);
+        if (!uop.is_open()){
+            throw std::runtime_error(strutil::format("Unable to create: %s",datapath.string().c_str()));
+        }
+        auto offsets = createUOP(uop, static_cast<std::uint32_t>(entry_location.size()) + 1) ;
+
+        auto offset = uop.tellp() ;
+        auto count = 0 ;
+        for (auto const &[id,entry_offset]:entry_location){
+            auto collection = (*this)[id] ;
+            auto data = collection.record(true) ;
+            auto table = table_entry() ;
+            table.decompressed_length = static_cast<std::uint32_t>(data.size()) ;
+            table.compression = 1 ;
+            auto destsize = static_cast<uLong>(compressBound(static_cast<uLong>(data.size())));
+            auto dest = std::vector<std::uint8_t>(destsize,0) ;
+            auto srcsize = uLongf(data.size());
+            
+            auto status = compress(dest.data(), &destsize, data.data(), srcsize) ;
+            if (status != Z_OK) {
+                throw std::runtime_error("Error compressing data for entry: "s + std::to_string(id));
+            }
+            dest.resize(destsize);
+            std::swap(dest,data) ;
+            table.compressed_length = static_cast<std::uint32_t>(data.size());
+            table.identifier = hashLittle2(strutil::format(hashformat,id));
+            table.data_block_hash = hashAdler32(data);
+            table.offset = uop.tellp() ;
+            uop.seekp(offset,std::ios::beg);
+            uop.write(reinterpret_cast<char*>(data.data()),data.size());
+            offset = uop.tellp();
+            uop.seekp(offsets[count],std::ios::beg);
+            table.save(uop);
+            uop.seekp(offset,std::ios::beg);
+            count++ ;
+        }
+        auto housedata = housingdata;
+        // Now we need to housing.bin
+        auto table = table_entry() ;
+        auto destsize = static_cast<uLong>(compressBound(static_cast<uLong>(housedata.size())));
+        auto dest = std::vector<std::uint8_t>(destsize,0) ;
+        auto srcsize = uLongf(housedata.size());
+        
+        auto status = compress(dest.data(), &destsize, housedata.data(), srcsize) ;
+        if (status != Z_OK) {
+            throw std::runtime_error("Error compressing data for housing entry"s );
+        }
+        dest.resize(destsize);
+        std::swap(dest,housedata) ;
+        table.decompressed_length = static_cast<std::uint32_t>(dest.size());
+        table.compressed_length = static_cast<std::uint32_t>(housedata.size());
+        table.identifier = housinghash ;
+        table.compression =1 ;
+        table.data_block_hash = hashAdler32(housedata);
+        table.offset = uop.tellp() ;
+        
+        uop.seekp(offset,std::ios::beg);
+        uop.write(reinterpret_cast<char*>(housedata.data()),housedata.size());
+        offset = uop.tellp();
+        uop.seekp(offsets[count],std::ios::beg);
+        table.save(uop);
+        uop.seekp(offset,std::ios::beg) ;
+   }
 }

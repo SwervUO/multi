@@ -75,6 +75,8 @@ public:
     auto uop() const ->bool {return isuop;}
     auto maxid() const ->std::uint32_t ;
     auto saveHousing(const std::filesystem::path &filepath) const ->void ;
+    auto housing() const ->std::vector<std::uint8_t> ;
+    auto save(const std::filesystem::path &datapath,const std::filesystem::path &idxpath=std::filesystem::path(),const std::vector<std::uint8_t> &housingdata = std::vector<std::uint8_t>()) ->void ;
     auto operator[](std::uint32_t index) const -> multi_t ;
 };
 
